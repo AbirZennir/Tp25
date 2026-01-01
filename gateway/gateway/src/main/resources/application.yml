@@ -1,0 +1,36 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: GATEWAY
+
+  cloud:
+    gateway:
+      routes:
+        # =======================
+        #  ROUTE VERS CLIENT
+        # =======================
+        - id: client-service
+          uri: lb://CLIENT      # nom EXACT affiché dans Eureka
+          predicates:
+            - Path=/api/client/**
+          filters:
+            - StripPrefix=1
+
+        # =======================
+        #  ROUTE VERS CAR
+        # =======================
+        - id: car-service
+          uri: lb://CAR         # nom EXACT affiché dans Eureka
+          predicates:
+            - Path=/api/car/**
+          filters:
+            - StripPrefix=1
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
